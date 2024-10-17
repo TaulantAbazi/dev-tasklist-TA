@@ -1,26 +1,28 @@
 import { Booking } from "../lib/booking";
 
-const BASE_API_URL = "http://host.docker.internal:5000/api/bookings";
+const BASE_API_URL = "http://localhost:5000/api/bookings";
 
 export class BookingService {
   async getBookings(): Promise<Booking[]> {
     const res = await fetch(BASE_API_URL, {
       cache: "no-store",
-      mode: "no-cors",
     });
 
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }
 
-    return res.json();
+    return await res.json();
   }
 
   async getBookingById(id: number): Promise<Booking> {
-    const res = await fetch(`${BASE_API_URL}/${id}`, {
-      cache: "no-store",
-      mode: "no-cors",
-    });
+    const res = await fetch(
+      `${"http://host.docker.internal:5000/api/bookings"}/${id}`,
+      {
+        cache: "no-store",
+        mode: "no-cors",
+      }
+    );
 
     if (!res.ok) {
       throw new Error(`Failed to fetch booking with id ${id}`);
@@ -32,7 +34,7 @@ export class BookingService {
   async createBooking(bookingData: Partial<Booking>): Promise<void> {
     const { service, doctor_name, start_time, end_time, date } = bookingData;
     try {
-      await fetch("http://localhost:5000/api/bookings", {
+      await fetch(BASE_API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

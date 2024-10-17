@@ -1,10 +1,21 @@
-import Link from "next/link"; 
+"use client";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { BookingService } from "../../services/booking.service";
 import { Booking } from "../../lib/booking";
 
-const Bookings: React.FC = async () => {
+const Bookings: React.FC = () => {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+
   const bookingService = new BookingService();
-  const bookings = await bookingService.getBookings();
+
+  const fetchBookings = async () => {
+    const fetchedBookings = await bookingService.getBookings();
+    setBookings(fetchedBookings || []);
+  };
+  useEffect(() => {
+    fetchBookings();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100 py-8">
